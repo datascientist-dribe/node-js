@@ -22,21 +22,24 @@ const server = http.createServer((req, res) => {
     if (url === '/message' && method === 'POST'){
         const body = []
         req.on('data', (chunk) => {
-            console.log(chunk)
+            console.log(chunk);
             body.push(chunk);
         });
-        req.on('end', () => {
+        return req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
-            const message = parsedBody.split('=')[1]
-            fs.writeFileSync('message.txt', message);
+            const message = parsedBody.split('=')[1];
+            fs.writeFileSync('message.txt', message, (err) => {
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end();
+                
+            });
         });
-        res.statusCode = 302;
-        res.setHeader('Location', '/')
     }
     res.setHeader('Content-Type', 'text/html');
     res.write('<html>');
     res.write('<head><title> My first page</title></head>');
-    res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button>Send</button></form></body>');
+    res.write('<body><h1>Hello from the BE</h1></body>');
     res.write('</html>');
     res.end();
 });
