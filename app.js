@@ -7,12 +7,18 @@ const app = express();
 
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use((req, res, next) => {
+    console.log(req.rawBody);
+    next();
+});
+
+
 app.use('/add-product', (req, res, next) => {
     console.log('in add products')
     res.send('<form action="/product" method="POST"><input type = "text" name="title"><button type="submit">Add product</button></form>');
 });
 
-app.use('/product', (req, res, next) => {
+app.post('/product', (req, res, next) => {
     console.log(req.body);
     res.redirect('/');
 });
@@ -21,6 +27,7 @@ app.use('/', (req, res, next) => {
     console.log('in the server');
     next();
 });
+
 
 
 
