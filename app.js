@@ -1,37 +1,26 @@
-const http = require('http');
-
+const path = require('path')
 const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
 
+const adminRoutes = require('./routes/admin.js')
+const shopRoutes = require('./routes/shop.js')
+
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+
+// 404 message
 app.use((req, res, next) => {
-    console.log(req.rawBody);
-    next();
+    //res.status(404).send('<h1> Page not found </h1>');
+    res.status(404).sendFile(path.join(__dirname, 'views', 'page-not-found.html'))
 });
-
-
-app.use('/add-product', (req, res, next) => {
-    console.log('in add products')
-    res.send('<form action="/product" method="POST"><input type = "text" name="title"><button type="submit">Add product</button></form>');
-});
-
-app.post('/product', (req, res, next) => {
-    console.log(req.body);
-    res.redirect('/');
-});
-
-app.use('/', (req, res, next) => {
-    console.log('in the server');
-    next();
-});
-
-
-
 
 app.listen(3000);
+
+
 
 // const server = http.createServer(app);
 
